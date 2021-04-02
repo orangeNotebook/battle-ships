@@ -43,7 +43,7 @@ void menu(void) {
 		switch(choice) {
 			//case 1: Clear(); playerVComputer(); break;
 			case 2: Clear(); playerVPlayer(); break;
-			case 3: cout<<"In progress"; break;
+			case 3: Clear(); playerVPlayer(); break;
 			case 4: cout<<"In progress"; break;
 			case 5: cout<<"In progress"; break;
 			case 0: std::cout << "Exiting"; break;

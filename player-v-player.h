@@ -4,6 +4,8 @@
 #include <vector>
 #include <string>
 #include <iomanip>
+#include <cstdlib>
+
 
 #include "board-creation.h"
 #include "read-config.h"
@@ -27,11 +29,29 @@ class Ship {
     string name;   
     int size;
 
-		void place(vector<vector<string>> board){
+		vector<int> place(vector<vector<string>> board){
+			vector<int> coordsVect;
+			int alphabetToInt = 0;
 			string coords;
+
 			cout << "Boat size: " + to_string(this->size) + "\nWhere would you like to place this boat: ";
 			cin >> coords;
-			cout << coords;
+
+			char c = coords[0];
+
+			string coordsX(1,coords[0]);
+
+			for(int i = 0; i < board.size(); i++){
+				for(int j = 0; j < board[i].size(); j++){
+					//cout << "Comparing board: '" + board[i][j] + "' to : '" + (" " + (coords[0])) + "'\n";
+					if((" " + coordsX) == board[i][j]){
+						coordsVect.push_back((coords[1] - '0'));
+						coordsVect.push_back(j);
+					}
+				}
+			}
+			
+			return coordsVect;
 		}
 };
 
@@ -103,7 +123,8 @@ int playerVPlayer(){
 			cout << players[i].name + "'s Board: \n";
 			printBoard(players[i].board);
 			cout << "\n";
-			ships[j].place(players[i].board);
+			vector<int> coords = ships[j].place(players[i].board);
+			players[i].board[coords[0]][coords[1]] = "|S";
 			cout << "\n";
 		}
 	}
