@@ -6,6 +6,9 @@
 #include <iomanip>
 #include <cstdlib>
 #include <cstring>
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
 
 #include "board-creation.h"
@@ -44,7 +47,45 @@ class Ship {
 			return 0;
 		}
 
-		Player place(Player player){
+		string generateCoord(int size){
+			string coords = "";
+			string alphabetArray[] = {"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"};
+			int number, letter;
+			time_t nTime;
+
+			srand((unsigned) time(&nTime));
+			number = ((rand() % size) + 1);
+
+			if(size <= 26){
+				srand((unsigned) time(&nTime));
+				letter = (rand() % size);
+				coords += alphabetArray[letter] + to_string(number);
+			}else{
+				srand((unsigned) time(&nTime));
+				letter = (rand() % 26);
+				coords += "A" + alphabetArray[letter] + to_string(number);
+			}
+
+			return coords;
+		}
+
+		char generateDirection(){
+			char directionArray[] = {'L', 'R', 'U', 'D'};
+			int number, letter;
+			time_t nTime;
+
+			srand((unsigned) time(&nTime));
+			number = ((rand() % 4) + 1);
+
+			return directionArray[number];
+		}
+
+		Player randomPlacement(Player player){
+			
+
+		}
+//
+		Player placeShip(Player player){
 			vector<int> coordsVect;
 			int k = 0;
 			string coords;
@@ -56,8 +97,121 @@ class Ship {
 			string str2 = "";
 			string charSpace = " ";
 			string boxStr = "|S";
+			string coord;
 
-			cout << "Boat size: " + to_string(this->size) + "\nWhere would you like to place this boat [eg. F2]: ";
+			coord = generateCoord(player.board.size());
+
+			int length = checkLength(coord);
+
+			if(length == 2){
+				shipX = coords[0];
+				shipY = (coords[1] - '0');
+
+			}else if(length == 0){
+					cout << "Invalid coordinates, please try again\n";
+					return this->placeShip(player);
+
+			}else if(length == 3){
+					str1 += coords[1];
+					str1 += coords[2];
+
+					str2 += coords[0];
+					str2 += coords[1];
+					if(stoi(str1) >=1 && stoi(str1) <= player.board.size()){
+						shipY = (stoi(str1));
+						shipX = coords[0];
+
+					}else{
+						shipY = (coords[2] - '0');
+						shipX = (str2[1]);
+					} 
+				}
+			
+
+	
+
+			string coordsX(1,shipX);
+
+			for(int i = 0; i < player.board.size(); i++){
+				for(int j = 0; j < player.board[i].size(); j++){
+					//cout << "Comparing board: '" + board[i][j] + "' to : '" + (" " + (coords[0])) + "'\n";
+					if(player.board[i].size() > 26){			
+   				boxStr = "| S";
+  				charSpace = "  ";
+
+				
+						if((charSpace + str2[0] + str2[1]) == player.board[i][j]){
+							coordsVect.push_back(shipY);
+							coordsVect.push_back(j);
+							cout << to_string(coordsVect[0]);
+							cout << to_string(coordsVect[1]);
+						}else if((charSpace + coordsX) == player.board[i][j]){
+							coordsVect.push_back(shipY);
+							coordsVect.push_back(j);
+							cout << to_string(coordsVect[0]);
+							cout << to_string(coordsVect[1]);
+						}
+					}
+					else if((charSpace + coordsX) == player.board[i][j]){
+						coordsVect.push_back(shipY);
+						coordsVect.push_back(j);
+						cout << to_string(coordsVect[0]);
+						cout << to_string(coordsVect[1]);
+					}
+				}
+			}
+
+				while(notPlaced){
+
+				direction = this->generateDirection();
+				switch(direction){
+					case 'L':
+						player.board[coordsVect[0]][coordsVect[1] - k] = boxStr;
+						if ((coordsVect[1] - (k+1)) == (coordsVect[1] - this->size)){ notPlaced = false; }
+						break;
+					case 'R':
+						player.board[coordsVect[0]][coordsVect[1] + k] = boxStr;
+						if ((coordsVect[1] + (k+1)) == (coordsVect[1] + this->size)){ notPlaced = false; }
+						break;
+					case 'D':
+						player.board[coordsVect[0] + k][coordsVect[1]] = boxStr;
+						if ((coordsVect[0] + (k+1)) == (coordsVect[0] + this->size)){ notPlaced = false; }
+						break;
+					case 'U':
+						player.board[coordsVect[0] - k][coordsVect[1]] = boxStr;
+						if ((coordsVect[0] - (k+1)) == (coordsVect[0] - this->size)){ notPlaced = false; }
+						break;
+				}
+				k++;
+			}
+
+			return player;
+			}
+		
+//old one
+		Player place(Player player){
+			vector<int> coordsVect;
+			int k = 0;
+			char placeOption;
+			string coords;
+			char direction;
+			bool notPlaced = true;
+			int shipY;
+			char shipX;
+			string str1 = "";
+			string str2 = "";
+			string charSpace = " ";
+			string boxStr = "|S";
+
+			cout << "1. Place your boats\n2. Place boats automatically";
+
+			cin >> placeOption;
+
+			if(placeOption == '2'){
+				return this->placeShip(player);
+			}
+
+			cout << "\nBoat size: " + to_string(this->size) + "\nWhere would you like to place this boat [eg. F2]: ";
 			cin >> (coords);
 
 			int length = checkLength(coords);
