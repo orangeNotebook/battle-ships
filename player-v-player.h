@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include<unistd.h>
 
 
 #include "board-creation.h"
@@ -19,6 +20,13 @@ using namespace std;
 void Clear()
 {
     cout << "\x1B[2J\x1B[H";
+}
+
+void pressAnyKey(){
+//codes here
+cout << "Press any key to continue...";
+cin.ignore();
+cin.get();
 }
 
 class Player {
@@ -69,13 +77,45 @@ class Ship {
 			return coords;
 		}
 
-		char generateDirection(){
+		char generateDirection(vector<int> coordsVect, int maxSize){
 			char directionArray[] = {'L', 'R', 'U', 'D'};
 			int number, letter;
 			time_t nTime;
+			bool invalidDirection = true;
+			int microsecond = 1000000;
 
-			srand((unsigned) time(&nTime));
-			number = ((rand() % 4) + 1);
+			int coordX = coordsVect[1];
+			int coordY = coordsVect[0];
+
+		
+			
+			while(invalidDirection){
+				srand((unsigned) time(&nTime));
+				number = (rand() % 4);
+				switch(directionArray[number]){
+					case 'L':
+						if(coordX - this->size >= 0){
+							invalidDirection = false;
+						}
+						break;
+					case 'R':
+						if(coordX + this->size <= maxSize){
+							invalidDirection = false;
+						}
+						break;
+					case 'D':
+						if(coordY + this->size <= maxSize){
+							invalidDirection = false;
+						}
+						break;
+					case 'U':
+						if(coordY - this->size >= 0){
+								invalidDirection = false;
+							}
+						break;
+				}
+				usleep(1 * microsecond);
+			}
 
 			return directionArray[number];
 		}
@@ -97,11 +137,14 @@ class Ship {
 			string str2 = "";
 			string charSpace = " ";
 			string boxStr = "|S";
-			string coord;
+			bool invalidDirection = true;
+	
 
-			coord = generateCoord(player.board.size());
+			
+			coords = generateCoord(player.board.size());
+			
 
-			int length = checkLength(coord);
+			int length = checkLength(coords);
 
 			if(length == 2){
 				shipX = coords[0];
@@ -127,7 +170,7 @@ class Ship {
 					} 
 				}
 			
-
+		
 	
 
 			string coordsX(1,shipX);
@@ -135,56 +178,58 @@ class Ship {
 			for(int i = 0; i < player.board.size(); i++){
 				for(int j = 0; j < player.board[i].size(); j++){
 					//cout << "Comparing board: '" + board[i][j] + "' to : '" + (" " + (coords[0])) + "'\n";
+					
 					if(player.board[i].size() > 26){			
    				boxStr = "| S";
   				charSpace = "  ";
 
-				
+					
 						if((charSpace + str2[0] + str2[1]) == player.board[i][j]){
 							coordsVect.push_back(shipY);
 							coordsVect.push_back(j);
-							cout << to_string(coordsVect[0]);
-							cout << to_string(coordsVect[1]);
+						
 						}else if((charSpace + coordsX) == player.board[i][j]){
 							coordsVect.push_back(shipY);
 							coordsVect.push_back(j);
-							cout << to_string(coordsVect[0]);
-							cout << to_string(coordsVect[1]);
+						
 						}
 					}
 					else if((charSpace + coordsX) == player.board[i][j]){
 						coordsVect.push_back(shipY);
 						coordsVect.push_back(j);
-						cout << to_string(coordsVect[0]);
-						cout << to_string(coordsVect[1]);
+					
 					}
 				}
 			}
 
+			
+
+				direction = this->generateDirection(coordsVect, player.board.size());
+
 				while(notPlaced){
-
-				direction = this->generateDirection();
-				switch(direction){
-					case 'L':
-						player.board[coordsVect[0]][coordsVect[1] - k] = boxStr;
-						if ((coordsVect[1] - (k+1)) == (coordsVect[1] - this->size)){ notPlaced = false; }
-						break;
-					case 'R':
-						player.board[coordsVect[0]][coordsVect[1] + k] = boxStr;
-						if ((coordsVect[1] + (k+1)) == (coordsVect[1] + this->size)){ notPlaced = false; }
-						break;
-					case 'D':
-						player.board[coordsVect[0] + k][coordsVect[1]] = boxStr;
-						if ((coordsVect[0] + (k+1)) == (coordsVect[0] + this->size)){ notPlaced = false; }
-						break;
-					case 'U':
-						player.board[coordsVect[0] - k][coordsVect[1]] = boxStr;
-						if ((coordsVect[0] - (k+1)) == (coordsVect[0] - this->size)){ notPlaced = false; }
-						break;
+					switch(direction){
+						case 'L':
+							player.board[coordsVect[0]][coordsVect[1] - k] = boxStr;
+							if ((coordsVect[1] - (k+1)) == (coordsVect[1] - this->size)){ notPlaced = false; }
+							break;
+						case 'R':
+							player.board[coordsVect[0]][coordsVect[1] + k] = boxStr;
+							if ((coordsVect[1] + (k+1)) == (coordsVect[1] + this->size)){ notPlaced = false; }
+							break;
+						case 'D':
+							player.board[coordsVect[0] + k][coordsVect[1]] = boxStr;
+							if ((coordsVect[0] + (k+1)) == (coordsVect[0] + this->size)){ notPlaced = false; }
+							break;
+						case 'U':
+							player.board[coordsVect[0] - k][coordsVect[1]] = boxStr;
+							if ((coordsVect[0] - (k+1)) == (coordsVect[0] - this->size)){ notPlaced = false; }
+							break;
+					}
+					k++;
 				}
-				k++;
-			}
 
+			// cout << "Boat placed: '" + coords + "' facing '" +direction + "'";
+			// pressAnyKey();
 			return player;
 			}
 		
@@ -203,14 +248,7 @@ class Ship {
 			string charSpace = " ";
 			string boxStr = "|S";
 
-			cout << "1. Place your boats\n2. Place boats automatically";
-
-			cin >> placeOption;
-
-			if(placeOption == '2'){
-				return this->placeShip(player);
-			}
-
+			
 			cout << "\nBoat size: " + to_string(this->size) + "\nWhere would you like to place this boat [eg. F2]: ";
 			cin >> (coords);
 
@@ -304,12 +342,7 @@ class Ship {
 		}
 };
 
-void pressAnyKey(){
-//codes here
-cout << "Press any key to continue...";
-cin.ignore();
-cin.get();
-}
+
 
 
 void printBoard(vector<vector<string>> Board){
@@ -473,6 +506,8 @@ int playerVPlayer(){
 
 	vector<vector<string>> emptyBoard = createBoard(Data[0], Data[1]);
 
+	char placeChoice;
+
 
 	cout << "Welcome "+ players[0].name + " and " + players[1].name + "\n";
 
@@ -481,8 +516,11 @@ int playerVPlayer(){
 		players[i].board = emptyBoard;
 		players[i].targetBoard = emptyBoard;
 
-		
-		
+		cout << "1. Place your boats\n2. Place boats automatically";
+
+		cin >> placeChoice;
+
+		if(placeChoice == '1'){
 		for(int j = 0; j < ships.size(); j++){
 			Clear();
 			cout << players[i].name + "'s Board: \n";
@@ -490,7 +528,19 @@ int playerVPlayer(){
 			cout << "\n";
 			players[i] = ships[j].place(players[i]);
 			cout << "\n";
+		}}else{
+			for(int j = 0; j < ships.size(); j++){
+			Clear();
+			cout << players[i].name + "'s Board: \n";
+			printBoard(players[i].board);
+			cout << "\nGenerating ship placement, please wait\n";
+			cout << "\n";
+			players[i] = ships[j].placeShip(players[i]);
+			cout << "\n";
 		}
+		}
+
+
 		Clear();
 		cout << players[i].name + "'s Board: \n";
 		printBoard(players[i].board);
