@@ -55,7 +55,7 @@ class Ship {
 			string str1 = "";
 			string str2 = "";
 			string charSpace = " ";
-			string boxStr = " |";
+			string boxStr = "|S";
 
 			cout << "Boat size: " + to_string(this->size) + "\nWhere would you like to place this boat [eg. F2]: ";
 			cin >> (coords);
@@ -76,13 +76,13 @@ class Ship {
 
 					str2 += coords[0];
 					str2 += coords[1];
-					if(stoi(str1) >=1 && stoi(str1)  <=player.board.size()){
+					if(stoi(str1) >=1 && stoi(str1) <= player.board.size()){
 						shipY = (stoi(str1));
 						shipX = coords[0];
 
 					}else{
 						shipY = (coords[2] - '0');
-						// shipX = (str2);
+						shipX = (str2[1]);
 					} 
 				}
 			
@@ -97,8 +97,21 @@ class Ship {
 					if(player.board[i].size() > 26){			
    				boxStr = "| S";
   				charSpace = "  ";
+
+				
+						if((charSpace + str2[0] + str2[1]) == player.board[i][j]){
+							coordsVect.push_back(shipY);
+							coordsVect.push_back(j);
+							cout << to_string(coordsVect[0]);
+							cout << to_string(coordsVect[1]);
+						}else if((charSpace + coordsX) == player.board[i][j]){
+							coordsVect.push_back(shipY);
+							coordsVect.push_back(j);
+							cout << to_string(coordsVect[0]);
+							cout << to_string(coordsVect[1]);
+						}
 					}
-					if((charSpace + coordsX) == player.board[i][j]){
+					else if((charSpace + coordsX) == player.board[i][j]){
 						coordsVect.push_back(shipY);
 						coordsVect.push_back(j);
 						cout << to_string(coordsVect[0]);
@@ -137,6 +150,12 @@ class Ship {
 		}
 };
 
+void pressAnyKey(){
+//codes here
+cout << "Press any key to continue...";
+cin.ignore();
+cin.get();
+}
 
 
 void printBoard(vector<vector<string>> Board){
@@ -180,6 +199,115 @@ vector<Ship> createShips(vector<int> Data){
 	return ships;
 }
 
+vector<Player> shoot(vector<Player> players, int turn){
+	string coords;
+	string checkShip = "|S";
+	string checkEmpty = "| ";
+	string hitMarker = "|H";
+	string missMarker = "|M";
+	string charSpace = " ";
+	int targetPlayer;
+	char targetX;
+	int intTargetX;
+	int targetY;
+	string str1;
+	string str2;
+
+	cout << "\nChoose where to shoot [eg. F2]: ";
+		cin >> coords;
+
+	if(turn == 0){
+		targetPlayer = 1;
+	}else{
+		targetPlayer = 0;
+	}
+
+	if(coords.size() == 2){
+				targetX = coords[0];
+				targetY = (coords[1] - '0');
+
+			}else if(coords.size() == 0 || coords.size() >= 4){
+					cout << "Invalid coordinates, please try again\n";
+					return shoot(players, turn);
+
+			}else if(coords.size() == 3){
+					str1 += coords[1];
+					str1 += coords[2];
+
+					str2 += coords[0];
+					str2 += coords[1];
+					if(stoi(str1) >=1 && stoi(str1) <= players[targetPlayer].board.size()){
+						targetY = (stoi(str1));
+						targetX = coords[0];
+
+					}else{
+						targetY = (coords[2] - '0');
+						targetX = (str2[1]);
+					} 
+				}
+			
+			string coordsX(1,targetX);
+	
+
+	for(int i = 0; i < players[targetPlayer].board.size(); i++){
+		if(players[targetPlayer].board[i].size() > 26){			
+		checkShip = "| S";
+		checkEmpty = "|  ";
+		hitMarker = "| H";
+		missMarker = "| M";
+		charSpace = "  ";
+	}
+				for(int j = 0; j < players[targetPlayer].board[i].size(); j++){
+
+					if((charSpace + coordsX) == players[targetPlayer].board[i][j]){
+						intTargetX = j;
+					}
+
+				}
+	}		
+	if(players[targetPlayer].board[targetY][intTargetX] == checkShip){
+		players[targetPlayer].board[targetY][intTargetX] = hitMarker;
+		players[turn].targetBoard[targetY][intTargetX] = hitMarker;
+	}else if(players[targetPlayer].board[targetY][intTargetX] == checkEmpty){
+		players[targetPlayer].board[targetY][intTargetX] = missMarker;
+		players[turn].targetBoard[targetY][intTargetX] = missMarker;
+	}
+
+	return players;
+}
+
+int gameLoop(vector<Player> players){
+	bool gameRunning = true;
+	int turn = 0;
+	string targetCoords;
+
+	while(gameRunning){
+		Clear();
+		cout << players[turn].name + "'s turn\n\nTarget board:\n";
+		printBoard(players[turn].targetBoard);
+		cout << "\n\nYour board: \n";
+		printBoard(players[turn].board);
+		players = shoot(players, turn);
+		Clear();
+		cout << players[turn].name + "'s turn\n\nTarget board:\n";
+		printBoard(players[turn].targetBoard);
+		cout << "\n\nYour board: \n";
+		printBoard(players[turn].board);
+		pressAnyKey();
+		Clear();
+		cout << "Please hand the game to the next player\n\n";
+		pressAnyKey();
+		Clear();
+
+		if(turn == 0){
+			turn = 1;
+		}else{
+			turn = 0;
+		}
+	}
+	return 0;
+}
+
 //main function
 int playerVPlayer(){
 
@@ -220,6 +348,7 @@ int playerVPlayer(){
 		}
 
 	}
+	gameLoop(players);
 
 	
 
