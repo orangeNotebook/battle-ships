@@ -94,10 +94,10 @@ vector<int> readFile(){
       Data.push_back(stoi(board[0]));
       Data.push_back(stoi(board[1]));
 
-      cout << row[0] << ": width: " << board[0] << " height: " << board[1] << "\n";
+      // cout << row[0] << ": width: " << board[0] << " height: " << board[1] << "\n";
 
     }else if(row[0] == "Boat"){
-      cout << row[0] << ": " << row[1] << ", size: " << row[2] << "\n";
+      // cout << row[0] << ": " << row[1] << ", size: " << row[2] << "\n";
       Data.push_back(stoi(row[2]));
     }
    
