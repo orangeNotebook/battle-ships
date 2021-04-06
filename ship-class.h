@@ -1,68 +1,15 @@
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <string>
-#include <iomanip>
-#include <cstdlib>
-#include <cstring>
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-#include<unistd.h>
-
+//importing
 #include "player-class.h"
+#include "utility.h"
 
-string makeUpper(string str) {
-  for (int i = 0; i < str.size(); i++) {
-    str[i] = toupper(str[i]);
-  }
-  return str;
-}
-
-void wait(int length){
-			int microsecond = 1000000;
-			usleep(length * microsecond);
-		}
-
-string generateCoord(int size) {
-  string coords = "";
-  string alphabetArray[] = {"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"};
-  int number, letter;
-  bool invalidCoord = true;
-  size -= 1;
-
-	wait(1);
-
-  while (invalidCoord) {
-    srand(time(0));;
-    number = ((rand() % size) + 1);
-
-    if (number <= size && number >= 1) {
-      invalidCoord = false;
-    }
-  }
-
-  if (size <= 26) {
-    random_shuffle(( & alphabetArray[0]), ( & alphabetArray[size - 1]));
-
-    srand(time(0));
-    letter = (rand() % (size));
-    coords += alphabetArray[letter] + to_string(number);
-  } else {
-    random_shuffle(begin(alphabetArray), end(alphabetArray));
-
-    srand(time(0));
-    letter = (rand() % 26);
-    coords += "A" + alphabetArray[letter] + to_string(number);
-  }
-  return coords;
-}
-
+//Creating the ship class
 class Ship {
+	//Name and Size properties are stored publicly for ease of access
   public:
     string name;
     int size;
 
+	//check length method used for ship placement
   int checkLength(string coords) {
     if (coords.size() == 1) {
       return 0;
@@ -77,64 +24,70 @@ class Ship {
   }
 
 		
-
-		bool validateDirection(vector < int > coordsVect, int maxSize, char direction) {
+	//Method to validate if a direction is within the board boundries
+	bool validateDirection(vector < int > coordsVect, int maxSize, char direction) {
 		int coordX = coordsVect[1];
-    int coordY = coordsVect[0];
+		int coordY = coordsVect[0];
 
+		//switch case determining if provided direction is within board boundries for its given coordinates
 		switch (direction) {
-					case 'L':
-						if (coordX - this -> size >= 0) {
-							return true;
-						}
-						break;
-					case 'R':
-						if (coordX + this -> size <= maxSize) {
-							return true;
-						}
-						break;
-					case 'D':
-						if (coordY + this -> size <= maxSize) {
-							return true;
-						}
-						break;
-					case 'U':
-						if (coordY - this -> size >= 0) {
-							return true;
-						}
-						break;
-					}
-					return false;
+			case 'L':
+				if (coordX - this -> size >= 0) {
+					return true;
+				}
+				break;
+			case 'R':
+				if (coordX + this -> size <= maxSize) {
+					return true;
+				}
+				break;
+			case 'D':
+				if (coordY + this -> size <= maxSize) {
+					return true;
+				}
+				break;
+			case 'U':
+				if (coordY - this -> size >= 0) {
+					return true;
+				}
+				break;
+			}
+		return false;
 	}
 
+	//method to generate a random direction
   char generateDirection(vector < int > coordsVect, int maxSize) {
-    char directionArray[] = {
-      'L',
-      'R',
-      'U',
-      'D'
-    };
-    int number, letter;
+		//a char array containing all available directions
+    char directionArray[] = {'L','R','U','D'};
+
+		//variables to store and generate random number
+    int number;
     time_t nTime;
+
+		//bool to make sure direction generated wont make the ship go off the board
     bool invalidDirection = true;
     
-
+		//while loop that generates random directions until one is valid
     while (invalidDirection) {
-
+			//generates a random number between 0 and 3
       srand((unsigned) time( & nTime));
       number = (rand() % 4);
+
+			//checks if the index of directionArray set to number is valid (eg. if number = 2, directionArray[number] -> 'U', then this gets checked in validateDirection)
        if (validateDirection(coordsVect, maxSize, directionArray[number])) {
-          invalidDirection = false;
+          invalidDirection = false; //if valid stop loop
         }
+			//if not valid, wait 1 second before regenerating direction (direction is generated from system time, this stops the program from creating multiple of the same direction after eachother and crashing the program)
       wait(1);
     }
 
+		//returns the valid generated direction
     return directionArray[number];
   }
 
 
 
-  //
+  //Place ship method used for placing the ship on a players grid
   Player placeShip(Player player, char placeType) {
     vector < int > coordsVect;
     int k = 0;
@@ -326,116 +279,4 @@ class Ship {
     // pressAnyKey();
     return player;
   }
-
-  //old one
-  // Player place(Player player) {
-  //   vector < int > coordsVect;
-  //   int k = 0;
-  //   char placeOption;
-  //   string coords;
-  //   char direction;
-  //   bool notPlaced = true;
-  //   int shipY;
-  //   char shipX;
-  //   string str1 = "";
-  //   string str2 = "";
-  //   string charSpace = " ";
-  //   string boxStr = "|S";
-
-  //   cout << "\nBoat size: " + to_string(this -> size) + "\nWhere would you like to place this boat [eg. F2]: ";
-  //   cin >> (coords);
-  //   coords = makeUpper(coords);
-
-  //   int length = checkLength(coords);
-
-  //   if (length == 2) {
-  //     shipX = coords[0];
-  //     shipY = (coords[1] - '0');
-
-  //   } else if (length == 0) {
-  //     cout << "Invalid coordinates, please try again\n";
-  //     return this -> place(player);
-
-  //   } else if (length == 3) {
-  //     str1 += coords[1];
-  //     str1 += coords[2];
-
-  //     str2 += coords[0];
-  //     str2 += coords[1];
-  //     if (stoi(str1) >= 1 && stoi(str1) <= player.board.size()) {
-  //       shipY = (stoi(str1));
-  //       shipX = coords[0];
-
-  //     } else {
-  //       shipY = (coords[2] - '0');
-  //       shipX = (str2[1]);
-  //     }
-  //   }
-
-  //   string coordsX(1, shipX);
-
-  //   for (int i = 0; i < player.board.size(); i++) {
-  //     for (int j = 0; j < player.board[i].size(); j++) {
-  //       //cout << "Comparing board: '" + board[i][j] + "' to : '" + (" " + (coords[0])) + "'\n";
-  //       if (player.board[i].size() > 26) {
-  //         boxStr = "| S";
-  //         charSpace = "  ";
-
-  //         if ((charSpace + str2[0] + str2[1]) == player.board[i][j]) {
-  //           coordsVect.push_back(shipY);
-  //           coordsVect.push_back(j);
-  //           cout << to_string(coordsVect[0]);
-  //           cout << to_string(coordsVect[1]);
-  //         } else if ((charSpace + coordsX) == player.board[i][j]) {
-  //           coordsVect.push_back(shipY);
-  //           coordsVect.push_back(j);
-  //           cout << to_string(coordsVect[0]);
-  //           cout << to_string(coordsVect[1]);
-  //         }
-  //       } else if ((charSpace + coordsX) == player.board[i][j]) {
-  //         coordsVect.push_back(shipY);
-  //         coordsVect.push_back(j);
-  //         cout << to_string(coordsVect[0]);
-  //         cout << to_string(coordsVect[1]);
-  //       }
-  //     }
-  //   }
-
-  //   cout << "What direction should it face? [L, R, U, D]: ";
-  //   cin >> direction;
-  //   direction = toupper(direction);
-
-  //   while (notPlaced) {
-
-  //     switch (direction) {
-  //     case 'L':
-  //       player.board[coordsVect[0]][coordsVect[1] - k] = boxStr;
-  //       if ((coordsVect[1] - (k + 1)) == (coordsVect[1] - this -> size)) {
-  //         notPlaced = false;
-  //       }
-  //       break;
-  //     case 'R':
-  //       player.board[coordsVect[0]][coordsVect[1] + k] = boxStr;
-  //       if ((coordsVect[1] + (k + 1)) == (coordsVect[1] + this -> size)) {
-  //         notPlaced = false;
-  //       }
-  //       break;
-  //     case 'D':
-  //       player.board[coordsVect[0] + k][coordsVect[1]] = boxStr;
-  //       if ((coordsVect[0] + (k + 1)) == (coordsVect[0] + this -> size)) {
-  //         notPlaced = false;
-  //       }
-  //       break;
-  //     case 'U':
-  //       player.board[coordsVect[0] - k][coordsVect[1]] = boxStr;
-  //       if ((coordsVect[0] - (k + 1)) == (coordsVect[0] - this -> size)) {
-  //         notPlaced = false;
-  //       }
-  //       break;
-  //     }
-  //     k++;
-  //   }
-
-  //   return player;
-  // }
 };

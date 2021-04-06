@@ -1,10 +1,3 @@
-//importing
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <string>
-#include <iomanip>
-
 using namespace std;
 
 vector < vector < string >> createBoard(int boardX, int boardY) {

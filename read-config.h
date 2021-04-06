@@ -85,22 +85,27 @@ vector<int> readFile(){
   //getting file
   ifstream file("data.csv");
 
-  //while loop that iterates through each row and prints it out with the correct spacing and formatting
+  //while loop that iterates through each row 
   while(file >> row)
   {
-    if(row[0] == "Board"){     
+		//checks for board
+    if(row[0] == "Board"){    
+			//splits board at 'x' 
       vector board = split(row[1], 'x');
 
+			//adds the board size to Data vector for future use
       Data.push_back(stoi(board[0]));
       Data.push_back(stoi(board[1]));
 
-      // cout << row[0] << ": width: " << board[0] << " height: " << board[1] << "\n";
+    }
+		//checks for boats
+		else if(row[0] == "Boat"){
 
-    }else if(row[0] == "Boat"){
-      // cout << row[0] << ": " << row[1] << ", size: " << row[2] << "\n";
+			//adds boats to Data vector for future use
       Data.push_back(stoi(row[2]));
     }
    
   }
+	//returns the data vector, first 2 indexes are board size everything after are boat sizes eg. for 10x8 grid with a 5 and 4 size boat -> {10,8,5,4}
   return Data;
 }

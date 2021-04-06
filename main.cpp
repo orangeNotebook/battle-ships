@@ -1,5 +1,3 @@
-
-
 #include <iostream>//defines the standard devices cin, cout, clog, ceer; for more info see http://www.cplusplus.com/reference/iostream/
 #include <string> //defines string types and conventions including begin & end iterator; for more info see http://www.cplusplus.com/reference/string/
 #include <algorithm>//defines a collection of ranged functions; for more info see http://www.cplusplus.com/reference/algorithm/
@@ -28,7 +26,7 @@ int main() {
 }
 
 void menu(void) {
-	std::string spacing = "                        ";
+	std::string spacing = "                      ";
 	std:: string topBorBorder = "|--------------------------------|";
 	int choice = -1; //declare and initialise an integer type variable
   Clear();
@@ -47,11 +45,11 @@ void menu(void) {
 		std::cout <<" |_________________________________________________________________________|\n";
 		std::cout << "\n" + spacing + "" + topBorBorder + "\n" + spacing + "|Advanced Programming - Ada Ships|\n"; 
 		std::cout << spacing + "|                                |\n";
-		std::cout << spacing + "|\t1. Player vs Computer        |\n";
-		std::cout << spacing + "|\t2. Player vs Player          |\n";
-		std::cout << spacing + "|                                |\n" + spacing + "|\t0. Quit                      |\n";
+		std::cout << spacing + "|\t1. Player vs Computer          |\n";
+		std::cout << spacing + "|\t2. Player vs Player            |\n";
+		std::cout << spacing + "|                                |\n" + spacing + "|\t0. Quit                        |\n";
 
-		std::cout << spacing +  topBorBorder + "\n" + spacing + "\n" + spacing + "   Please choose a game mode: ";
+		std::cout << spacing +  topBorBorder + "\n" + spacing + "\n" + spacing + "  Please choose a game mode: ";
 		std::cin >> choice;
 
 		switch(choice) {

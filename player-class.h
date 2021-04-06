@@ -1,17 +1,4 @@
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <string>
-#include <iomanip>
-#include <cstdlib>
-#include <cstring>
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-#include<unistd.h>
-
-
-
+//player class
 class Player {
   public:
     string name;   

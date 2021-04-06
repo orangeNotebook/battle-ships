@@ -1,22 +1,6 @@
-//importing
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <string>
-#include <iomanip>
-#include <cstdlib>
-#include <cstring>
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-#include<unistd.h>
-
 #include "player-v-player.h"
 
-
 using namespace std;
-
-
 
 int playerVComputerGameLoop(vector < Player > players, char developerMode, int winScore) {
   char shootOption;
