@@ -10,8 +10,7 @@
 #include <time.h>
 #include<unistd.h>
 
-#ifndef INCLUDED_A_H
-#define INCLUDED_A_H
+
 
 class Player {
   public:
@@ -42,4 +41,3 @@ vector<Player> createPlayer(int numberOfPlayers){
 	return players;
 }
 
-#endif

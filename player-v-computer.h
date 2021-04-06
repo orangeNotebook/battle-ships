@@ -16,92 +16,9 @@
 
 using namespace std;
 
-vector < Player > shoot2(vector < Player > players, int turn, char shootOption) {
-  string coords;
-  string checkShip = "|S";
-  string checkEmpty = "| ";
-  string hitMarker = "|H";
-  string missMarker = "|M";
-  string charSpace = " ";
-  int targetPlayer;
-  char targetX;
-  int intTargetX;
-  int targetY;
-  string str1;
-  string str2;
 
-  if (shootOption == '1') {
-    cout << "\nChoose where to shoot [eg. F2]: ";
-    cin >> coords;
-    coords = makeUpper(coords);
-  } else {
-    coords = generateCoord(players[0].board.size());
-  }
 
-  if (turn == 0) {
-    targetPlayer = 1;
-  } else {
-    targetPlayer = 0;
-  }
-
-  if (coords.size() == 2) {
-    targetX = coords[0];
-    targetY = (coords[1] - '0');
-
-  } else if (coords.size() == 0 || coords.size() >= 4) {
-    cout << "Invalid coordinates, please try again\n";
-    return shoot2(players, turn, shootOption);
-
-  } else if (coords.size() == 3) {
-    str1 += coords[1];
-    str1 += coords[2];
-
-    str2 += coords[0];
-    str2 += coords[1];
-    if (stoi(str1) >= 1 && stoi(str1) <= players[targetPlayer].board.size()) {
-      targetY = (stoi(str1));
-      targetX = coords[0];
-
-    } else {
-      targetY = (coords[2] - '0');
-      targetX = (str2[1]);
-    }
-  }
-
-  string coordsX(1, targetX);
-
-  for (int i = 0; i < players[targetPlayer].board.size(); i++) {
-    if (players[targetPlayer].board[i].size() > 26) {
-      checkShip = "| S";
-      checkEmpty = "|  ";
-      hitMarker = "| H";
-      missMarker = "| M";
-      charSpace = "  ";
-    }
-    for (int j = 0; j < players[targetPlayer].board[i].size(); j++) {
-
-      if ((charSpace + coordsX) == players[targetPlayer].board[i][j]) {
-        intTargetX = j;
-      }
-    }
-  }
-  if (players[targetPlayer].board[targetY][intTargetX] == checkShip) {
-    players[targetPlayer].board[targetY][intTargetX] = hitMarker;
-    players[turn].targetBoard[targetY][intTargetX] = hitMarker;
-  } else if (players[targetPlayer].board[targetY][intTargetX] == checkEmpty) {
-    players[targetPlayer].board[targetY][intTargetX] = missMarker;
-    players[turn].targetBoard[targetY][intTargetX] = missMarker;
-  } else if (players[targetPlayer].board[targetY][intTargetX] == hitMarker || players[targetPlayer].board[targetY][intTargetX] == missMarker) {
-    if (shootOption == '1') {
-      cout << "\nCoordinate already checked, please enter a different coordinate: \n";
-    }
-    return shoot2(players, turn, shootOption);
-  }
-
-  return players;
-}
-
-int gameLoop2(vector < Player > players, char developerMode) {
+int playerVComputerGameLoop(vector < Player > players, char developerMode, int winScore) {
   char shootOption;
   bool gameRunning = true;
   int turn = 0;
@@ -116,16 +33,17 @@ int gameLoop2(vector < Player > players, char developerMode) {
         printBoard(players[turn2].board);
         cout << "\n\nYour board: \n";
         printBoard(players[turn].board);
-
+				cout << "\nEnemy ship fragments left: " + to_string(winScore - players[turn].score) + "\n";
         cout << "\n1. Fire manually\n2. Fire randomly\n\nPlease choose how you would like to fire: ";
         cin >> shootOption;
 
-        players = shoot2(players, turn, shootOption);
+        players = shoot(players, turn, shootOption);
         Clear();
         cout << players[turn].name + "'s turn\n\nTarget board (developer mode):\n";
         printBoard(players[turn2].board);
         cout << "\n\nYour board: \n";
         printBoard(players[turn].board);
+				cout << "\nEnemy ship fragments left: " + to_string(winScore - players[turn].score) + "\n";
         pressAnyKey();
         Clear();
       } else {
@@ -134,16 +52,17 @@ int gameLoop2(vector < Player > players, char developerMode) {
         printBoard(players[turn].targetBoard);
         cout << "\n\nYour board: \n";
         printBoard(players[turn].board);
-
+				cout << "\nEnemy ship fragments left: " + to_string(winScore - players[turn].score) + "\n";
         cout << "\n1. Fire manually\n2. Fire randomly\n\nPlease choose how you would like to fire: ";
         cin >> shootOption;
 
-        players = shoot2(players, turn, shootOption);
+        players = shoot(players, turn, shootOption);
         Clear();
         cout << players[turn].name + "'s turn\n\nTarget board:\n";
         printBoard(players[turn].targetBoard);
         cout << "\n\nYour board: \n";
         printBoard(players[turn].board);
+				cout << "\nEnemy ship fragments left: " + to_string(winScore - players[turn].score) + "\n";
         pressAnyKey();
         Clear();
       }
@@ -155,18 +74,29 @@ int gameLoop2(vector < Player > players, char developerMode) {
         printBoard(players[turn2].board);
         cout << "\n\nComputers board: \n";
         printBoard(players[turn].board);
+				cout << "\nEnemy ship fragments left: " + to_string(winScore - players[turn].score) + "\n";
         pressAnyKey();
-        players = shoot2(players, turn, 2);
+        players = shoot(players, turn, 2);
         Clear();
         cout << players[turn].name + "'s turn (only visible in developer mode)\n\nTarget board (developer mode):\n";
         printBoard(players[turn2].board);
         cout << "\n\nComputers board: \n";
         printBoard(players[turn].board);
+				cout << "\nEnemy ship fragments left: " + to_string(winScore - players[turn].score) + "\n";
         pressAnyKey();
         Clear();
       } else {
-        players = shoot2(players, turn, 2);
+        players = shoot(players, turn, 2);
       }
+    }
+
+		if (players[turn].score == winScore) {
+      Clear();
+      cout << players[turn].name + " wins!\n\n";
+      pressAnyKey();
+      Clear();
+      gameRunning = false;
+      return 0;
     }
 
     if (turn == 0) {
@@ -189,6 +119,7 @@ int playerVComputer() {
 
   char placeChoice;
   char developerMode;
+	int winScore;
 
   cout << "Would you like to access developer mode (see computers ships and turn)\n\n[Y/N]: ";
   cin >> developerMode;
@@ -206,22 +137,26 @@ int playerVComputer() {
       cin >> placeChoice;
 
       if (placeChoice == '1') {
+				winScore = 0;
         for (int j = 0; j < ships.size(); j++) {
+					winScore += ships[j].size;
           Clear();
           cout << players[i].name + "'s Board: \n";
           printBoard(players[i].board);
           cout << "\n";
-          players[i] = ships[j].place(players[i]);
+          players[i] = ships[j].placeShip(players[i], placeChoice);
           cout << "\n";
         }
       } else {
+				winScore = 0;
         for (int j = 0; j < ships.size(); j++) {
+					winScore += ships[j].size;
           Clear();
           cout << players[i].name + "'s Board: \n";
           printBoard(players[i].board);
           cout << "\nGenerating ship placement, please wait\n";
           cout << "\n";
-          players[i] = ships[j].placeShip(players[i]);
+          players[i] = ships[j].placeShip(players[i], placeChoice);
           cout << "\n";
         }
       }
@@ -232,19 +167,24 @@ int playerVComputer() {
       cout << "\nAre you happy with your board layout? [Y, N]: ";
       cin >> choice;
       choice = toupper(choice);
+
       if (choice == 'N') {
         players[i].board = emptyBoard;
         i--;
       }
+
     } else {
       if (developerMode == 'Y') {
         for (int j = 0; j < ships.size(); j++) {
           Clear();
           cout << players[i].name + "'s Board: \n";
-          printBoard(players[i].board);
+					printBoard(players[i].board);
+					cout << "\nGenerating ship placement, please wait\n";
+          players[i] = ships[j].placeShip(players[i], '2');
+					Clear();
+					cout << players[i].name + "'s Board: \n";
+					printBoard(players[i].board);
           cout << "\nGenerating ship placement, please wait\n";
-          cout << "\n";
-          players[i] = ships[j].placeShip(players[i]);
           cout << "\n";
         }
         pressAnyKey();
@@ -255,7 +195,7 @@ int playerVComputer() {
           // printBoard(players[i].board);
           cout << "\nGenerating ship placement, please wait\n";
           cout << "\n";
-          players[i] = ships[j].placeShip(players[i]);
+          players[i] = ships[j].placeShip(players[i], '2');
           cout << "\n";
         }
       }
@@ -263,7 +203,7 @@ int playerVComputer() {
 
   }
 
-  gameLoop2(players, developerMode);
+  playerVComputerGameLoop(players, developerMode, winScore);
 
   return 0;
 }
