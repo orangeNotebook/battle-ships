@@ -83,7 +83,7 @@ vector<int> readFile(){
   vector<int> Data;
 
   //getting file
-  ifstream file("data.csv");
+  ifstream file("adaship_config.csv");
 
   //while loop that iterates through each row 
   while(file >> row)

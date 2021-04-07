@@ -1,4 +1,22 @@
-//
+//Utility file for functions
+void printBoard(vector < vector < string >> Board) {
+  for (int i = 0; i < Board.size(); i++) {
+    for (int j = 0; j < Board[1].size(); j++) {
+      cout << Board[i][j] << "";
+    }
+    cout << endl;
+  }
+}
+
+void Clear() {
+  cout << "\x1B[2J\x1B[H";
+}
+
+void pressAnyKey() {
+  cout << "Press any key to continue...";
+  cin.ignore();
+  cin.get();
+}
 
 string makeUpper(string str) {
   for (int i = 0; i < str.size(); i++) {

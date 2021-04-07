@@ -6,7 +6,7 @@
 
 //include default source files for daily primer challenges
 // #include "player-v-player.h"
-#include "player-v-computer.h"
+#include "Headers/player-v-computer.h"
 
 
 //function declarations:
@@ -28,7 +28,7 @@ int main() {
 void menu(void) {
 	std::string spacing = "                      ";
 	std:: string topBorBorder = "|--------------------------------|";
-	int choice = -1; //declare and initialise an integer type variable
+	char choice; //declare and initialise an integer type variable
   Clear();
 	do { //set up a continuous loop
 		std::cout <<"                                      |\n";
@@ -49,17 +49,19 @@ void menu(void) {
 		std::cout << spacing + "|\t2. Player vs Player            |\n";
 		std::cout << spacing + "|                                |\n" + spacing + "|\t0. Quit                        |\n";
 
-		std::cout << spacing +  topBorBorder + "\n" + spacing + "\n" + spacing + "  Please choose a game mode: ";
+		std::cout << spacing +  topBorBorder + "\n" + spacing + "\nNote: Choosing an invalid value will result in the last non quit value being chosen \n\n" + spacing + "   Please choose a game mode: ";
 		std::cin >> choice;
 
 		switch(choice) {
-			case 1: Clear(); playerVComputer(); break;
-			case 2: Clear(); playerVPlayer(); break;
-			case 0: std::cout << "Exiting"; break;
+			case '1': Clear(); playerVComputer(); break;
+			case '2': Clear(); playerVPlayer(); break;
+			case '0': std::cout << "Exiting"; break;
 			default:
-				std::cout << "\n'" << choice << "' Is an invalid option  - please try again.";
+			Clear();;
+				std::cout << "                  '" << choice << "' Is an invalid option - please try again.\n";
+				
 				break;
 		}
-	} while(choice != 0);
+	} while(choice != '0');
 	std::cout << " - Done\n\n";
 }

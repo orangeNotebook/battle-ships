@@ -89,82 +89,111 @@ class Ship {
 
   //Place ship method used for placing the ship on a players grid
   Player placeShip(Player player, char placeType) {
+		//vector for ship place coordinates
     vector < int > coordsVect;
-    int k = 0;
+		//string to hold user input or generated coords
     string coords;
+		//character to hold direction
     char direction;
-    bool notPlaced = true;
+		//K and Y used for direction validation
+		int k = 0;
+    int y = 0;
     int shipY;
     char shipX;
+		//Temporary strings used to convert larger coordinates
     string str1 = "";
     string str2 = "";
+		//board notation
     string charSpace = " ";
     string boxStr = "|S";
+		//boolean to make sure ship placement is valid
     bool invalidDirection = true;
 		bool notValid = true;
-		int y = 0;
+		bool notPlaced = true;
+	
 
-
+		//determine if the ship is to be placed manually or automatically, if manually get coords from user
 		if(placeType == '1'){
 			cout << "\nBoat size: " + to_string(this -> size) + "\nWhere would you like to place this boat [eg. F2]: ";
   		cin >> (coords);
     	coords = makeUpper(coords);
 		}else{
+			//if automatically generate coordinates
 			coords = generateCoord(player.board.size());
 		}
 
+		//checks lengh of coordinates 
     int length = checkLength(coords);
 
+		//this section converts coordinates into X and Y (similar to shoot)
     if (length == 2) {
       shipX = coords[0];
       shipY = (coords[1] - '0');
 
     } else if (length == 0) {
-      cout << "Invalid coordinates, (too short) please try again\n";
+			//if coordinates are too short or long, makes user re-enter coordinates
+      cout << "Invalid coordinates, please try again\n";
       return this -> placeShip(player, placeType);
 
     } else if (length == 3) {
+			//temporary strings to hold the Y coordinate
       str1 += coords[1];
       str1 += coords[2];
-
+			//temporary string to hold the X coordinate
       str2 += coords[0];
       str2 += coords[1];
+			//this checks if the format of the coordinate is letter number number eg, A23
       if (stoi(str1) >= 1 && stoi(str1) <= player.board.size()) {
+				//if it is set shipY to int version of str1
         shipY = (stoi(str1));
+				//make shipX equal to the first letter of the coord (this gets converted to int later)
         shipX = coords[0];
 
       } else {
+				//if not make shipY equal to the last number in int
         shipY = (coords[2] - '0');
+				//make shipX equal to the second part of the coord eg. AB2 = set shipX to B
         shipX = (str2[1]);
       }
     }
 
+		//sets coordsX to a string version of shipX
     string coordsX(1, shipX);
 
+		//loop that converts the X from a char to an int
     for (int i = 0; i < player.board.size(); i++) {
       for (int j = 0; j < player.board[i].size(); j++) {
-        //cout << "Comparing board: '" + board[i][j] + "' to : '" + (" " + (coords[0])) + "'\n";
-
+     
+				//checks the size of the board and changes notation accordingly for future comparison
         if (player.board[i].size() > 26) {
           boxStr = "| S";
           charSpace = "  ";
 
+					//Chcks to see if larger X are in the board eg. AB
           if ((charSpace + str2[0] + str2[1]) == player.board[i][j]) {
+						//if X found push the y to coordsVect
             coordsVect.push_back(shipY);
+						//if X found push the iteration of loop to coordsVect (this will be the X)
             coordsVect.push_back(j);
 
+					//checks to see if X is in the board eg. A
           } else if ((charSpace + coordsX) == player.board[i][j]) {
+						//if X found push the y to coordsVect
             coordsVect.push_back(shipY);
+						//if X found push the iteration of loop to coordsVect (this will be the X)
             coordsVect.push_back(j);
 
           }
+					//Checks if X is in the board, also identifies if the coordinate is valid or not
         } else if ((charSpace + coordsX) == player.board[i][j]) {
           coordsVect.push_back(shipY);
           coordsVect.push_back(j);
+					//checks if coordinate already has a ship on it
 					if(player.board[coordsVect[0]][coordsVect[1]] == boxStr){
 						if(placeType == '1'){
 						cout << "Inavlid coordinate, try again\n";
 						}
+						//if ship already present wait a second and then make the player enter a different coordinate
 						wait(1);
 						return this -> placeShip(player, placeType);
 					}
@@ -173,19 +202,22 @@ class Ship {
       }
     }
 
+		//if manual ship placement asks user for direction, otherwise generates it
 		if(placeType == '1'){
 			cout << "What direction should it face? [L, R, U, D]: ";
     	cin >> direction;
     	direction = toupper(direction);
 		}else{
+			//automatically generates direction
 			direction = this -> generateDirection(coordsVect, player.board.size());
 		}
 
+		//while loop that runs until a valid position is found and the ship is placed
     while (notPlaced) {
       switch (direction) {
       case 'L':
 			y = 0;
-			//Check collisions with other ships
+			//Check collisions with other ships, once no collisions make this valid and places the ship
 				while(notValid){
 					if(player.board[coordsVect[0]][coordsVect[1] - y] == boxStr){
 						if(placeType == '1'){
@@ -207,7 +239,7 @@ class Ship {
         break;
       case 'R':
 			y = 0;
-				//Check collisions with other ships
+				//Check collisions with other ships, once no collisions make this valid and places the ship
 				while(notValid){
 					if(player.board[coordsVect[0]][coordsVect[1] + y] == boxStr){
 						if(placeType == '1'){
@@ -229,7 +261,7 @@ class Ship {
         break;
       case 'D':
 			y = 0;
-				//Check collisions with other ships
+				//Check collisions with other ships, once no collisions make this valid and places the ship
 				while(notValid){
 					if(player.board[coordsVect[0] + y][coordsVect[1]] == boxStr){
 						if(placeType == '1'){
@@ -251,7 +283,7 @@ class Ship {
         break;
       case 'U':
 			y = 0;
-				//Check collisions with other ships
+				//Check collisions with other ships, once no collisions make this valid and places the ship
 				while(notValid){
 					if(player.board[coordsVect[0] - y][coordsVect[1]] == boxStr){
 						if(placeType == '1'){
@@ -274,9 +306,7 @@ class Ship {
       }
       k++;
     }
-
-    // cout << "Boat placed: '" + coords + "' facing '" +direction + "'";
-    // pressAnyKey();
+		//returns updated player with placed ship on their player.board
     return player;
   }
 };

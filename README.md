@@ -1,188 +1,153 @@
-# Assignment Description
+# **ADA-Ships - Kacper Kiermasz**
+[Link to my code running in repl.it](https://replit.com/join/qpejpxyl-orangenotebook)
+## **Challenge Outline**
+In this section I will discuss the overall proposed solution to the problem, along with UML style diagrams and my initial working plan, approach and strategy. I will decompose the overall problem into smaller tasks and discuss my initial object oriented design ideas.
+### **Summery and Review of the problem**
+ADA Ships is a C++, object oriented (OO) clone version of the classic game 'Battleships', a two player turn based game where you and your opponent try to find and destroy each others hidden ships. The game consists of players placing down their ships on two 10 by 10 grids, followed by taking shots at the opponents grid in an alternating style. The winner is the player that manages to find and destroy all of the oppositions ships first.
 
-Use an object-oriented design approach for the creation, development and testing of AdaShip (a REPL.IT C++ computer console version/adaptation of the classic paper-based Battleships game). You are expected to adopt an agile and iterated approach to decomposing, designing and developing your game; ideally with a test early and fail fast approach.
+My version of ADA Ships is going to contain two game modes, a single player 'Player vs Computer' mode, where the player battles an AI, and a 'Player vs Player' game mode, where two player battle each other until one of the player runs out of ships. In addition to this, my version will contain a scalable grid and battle ships; this means that the player will be able to alter the size of the board and the size / amount of battle ships available in the game via a configuration file (`adaship_config.csv`).
 
-## How AdaShip Is Played
-Essentially, AdaShip is a clone of the classic ‘Battleship’ game – as a default, AdaShip is a two-player, turn based game of sea warfare. You and an opponent each place a number of ships on your own board, and you then alternate turns "firing" torpedoes at each other’s ships. The game is won when one player has destroyed/sunk all of the other player’s ships.
-### Setup:
-By default, each player uses two 10x10 boards (a shipboard and a targetboard). Ship boards are used to initially position and hold a record of the location of your ships and any hits made by opponents. The target board is used to keep track of where you have fired (i.e., guessed) and the outcome; for example – hit or miss. Board locations are referenced using a single notation type coordinate system (‘A1’, ‘F4’, etc). The coordinate system must be designed to use alphabetic letters (A, B, ...) to represent columns and numbers (1, 2, ...) to represent rows.
+### **UML style diagram illustrating the initial solution**
+Below are some flow diagrams that I created to help me along my development. These flow diagrams show how a 'Player vs Computer' game will run. The diagram contains the main menu, along with board creation, ship placement logic and the primary game loop for the 'Player vs Computer' game mode.
 
-When placing ships, each player must place all their ships on their shipboard; ships have different sizes and can be either placed horizontally or vertically; a player’s ships cannot be placed such that any of their ships are either partly or entirely outside their board’s boundaries, across one (or occupy the same space as) a
-previously positioned ship. 
+![Player vs Computer flow diagram](Images/Player-vs-Computer.png)
 
-#### By default, there are five types of ships:
-1. Carrier - Length 5
-2. Battleship - Length 4
-3. Destroyer - Length 3
-4. Submarine - Length 3
-5. Patrol Boat - Length 2
+### **Initial working plan, overall approach and development strategy**
+Because this challenge had a deadline, I decided to try work in a somewhat agile, iterative way. Creating an MVP quickly, and building on it over time in order to complete as much of the program as possible before the submission date. This technique would allow me to program as many working features as I was capable of in the time frame.
 
-### A typical, two player game (player v computer)
-In a typical two-player game, each player would set up his own shipboard. Since your default opponent for this assignment will be the computer, you should set up your own board first, and have the computer decide where to place its ships (legally of course).
+Quality was a big factor during development, this is because the application is quite small, so each screen or task the user interacts with has to feel easy and intuitive. Along with this, I also wanted to make sure my code was free of any significant bugs that would hinder gameplay; in order to do this I split up functions and components into separate files for easier testing, along with programming with the mindset that 'complexity in a program should come with scale'. This allowed me to keep a lot of the functions / classes created very simple.
 
-### Typical game play
-The game is played in turns, where each player ‘fires a torpedo’ (by calling out a board coordinate) and the opponent indicates whether the ‘torpedo’ resulted in a "hit" or "miss". A "hit" indicates that the called position corresponded to a valid ship coordinate, otherwise it is a "miss". Players record their called positions using their targetboard; a record of both “hits” and “misses” should be recorded.
+### **Decomposition of the problem**
+Because the challenge has so many parts, I decided that the best way to tackle it would be to split up the main program functionality into smaller, easier to manage tasks. This included splitting up the different game modes into separate tasks (epics), and further still splitting these up into smaller tasks (stories). 
 
+In addition to this, I also created the [UML flow chart](#uml-style-diagram-illustrating-the-initial-solution) as a means to visualise some of these epics and stories (such as the Player vs Player game loop).
 
-### Winning
-Turns are repeated until all of your opponent’s ships have been ‘sunk/destroyed’; players must indicate as part of the response to each hit whether an entire ship has been sunk or just a single hit; for example, if our Carrier is located at B2, B3, B4, B5 and B6 and each position has been hit we need to indicate that the opponent sunk our ship.
+Some of the stories I created included: 
+- reading from a file
+- creating the player class 
+- creating a coordinate generator
+- creating a method to place ships
+- creating a shoot function
 
-## Marking Scheme 
-In addition to development, you are also required to provide a well-structured README document; details on the structure have been provided in the submission section.
+Some of the epics I created included:
+- the 'Player vs Player' game loop
+- the 'Player vs Computer' game loop
+- creating the ship class
+- creating an interpreter to read the config
 
-### Pass level your game is expected to support:
-#### 1. A run-time read, single file called ‘adaship_config.ini’ that defines the game’s configuration; your file should be setup to match the following structure:
+### **Initial OO design ideas**
+The first thing I did in regards to the object oriented nature of the challenge was think of the different objects and the properties / methods that they would require in order to be usable in the game. This included objects such as the ships and players. I decided that objects, such as the ship object, would need to store their size along with having a method that would allow users to place them on their grid, and the player object would need to store the players name, score and boards.
 
+## **Development**
+In this section I will discuss my use of 'good' standars, along with my development phases and how I ensured that the quality of my code is high. In addition, I will also reflect on some key design challenges and my solutions to them.
+
+### **Adoption and use of good standards**
+My programming mentality during this challenge was 'complexity comes with scale'. Because of this i focused on not overcomplicating every function and making sure that each function / method does one thing, not everything. This greatly helped me when it came to refactoring code as I knew exactly what belonged where and how it affects the rest of the program. In addition to this, I made sure to follow my [UML flow chart](#uml-style-diagram-illustrating-the-initial-solution) as closely as possible, this helped me in keeping my code well structured and readable.
+
+My iterative approach also helped in keeping clear and well flowing code, as opposed to spaghetti code. This is because instead of working on everything all at once, I built a very bare-bones MVP and reinforced it part by part. This also helped me with de-bugging as I tested often and failed fast, allowing me to resolve issues that might have of gone unnoticed otherwise.
+
+### **Phase 1. Class creation and board configuration**
+Before starting development on any of the gamemodes, I decided that I needed to code some foundations for the program. This included creating the game board, the classes / objects that I would require and reading from a configuration file. 
+
+#### **Board creation**
+This is where i met my first challenge as I was not sure how to create the board. I first tried to use a 2D `array`, but quickly switched to a `vector<vector<string>>` as it was far more scalable (this was an important factor as the board size can be changed by the player); however I still had some issues, mainly populating the board's axis.
+
+#### **Reading from the configuration**
+After creating a 10x10 board with axis, I decided to move on to reading from the configuration file. Instead of re-inventing the wheel, I copied some code I wrote from a previous ADA module that would interpret the configuration file and let me access each section of it. I then wrote some code to read these sections and determine if they relate to the board or ship. Following this I made sure I am reading all of the data correctly by printing it out in the console with the format:
 ```
-Board,10x10
-Boat,Carrier,5
-Boat,Battleship,4
-Boat,Destroyer,3
-Boat,Submarine,3
-Boat,Patrol Boat,2
+Board size: 10x10
+Boat size: 5
+Boat size: 4
+...
+```
+Finally, I took the data from the file that corresponded to board information and created a new `blankBoard` of the correct size.
+
+#### **Class creation**
+The first class I decided to create was a very basic `Player` class that contained the properties `name`, `board` and `targetBoard`. The boards were of type `vector<vector<string>>` and were equal to the `blankBoard` created when reading the configuration.
+
+Following this, I created the `Ship` class that contained the properties `name` and `size`. At this point, I decided that I wouldn't track the ships location and status (dead or alive) in the `Ship` class, but instead as a notation on the player's boards. The notation that I came up with is as follows:
+```
+'| '  -> blank field on the board if board size is less then 26 (alphabet length)
+'|  ' -> blank field on the board if board size is more then 26
+'|S'  -> ship field on the board if the board size is less then 26
+'| S' -> ship field on the board if the board size is more then 26
+'|H'  -> hit field on the board if board size is less then 26 (alphabet length)
+'| H' -> hit field on the board if board size is more then 26
+'|M'  -> miss field on the board if the board size is less then 26
+'| M' -> miss field on the board if the board size is more then 26 
 ```
 
-#### 2. A usable, intuitive and highly efficient Set-Up interface in which a player can with minimal effort:
+### **Phase 2. Player vs Player - ship palcement and shooting**
+Despite the requirements requesting a 'Player vs Computer' game mode first, I decided that it would be easier to start with a much more basic 'Player vs Player' MVP. With the board creation and basic `Ship` and `Player` classes completed, I started work on creating two players of type `Player`, getting their corresponding names from the users via a `cin` and setting the `targetBoard` and `board` properties equal to an `emptyBoard` 2D vector. Now all that was left was giving the players the ability to place their ships and shoot at each other.
 
-• Select from a game menu to a start a:
+#### **Placing ships**
+To go about placing the ships I created a `place` method (later renamed to `placeShip`) in the `Ship` class. At this point I faced an abundance of challenges, the main one being converting user entered coordinates into usable coordinates. This was a problem because the board vector requires integers in order to check what is located at said index, but the coordinate input is in the format `'letter'number` eg. `F2`. 
 
-- One player v computer game
-- Quit
+In order to solve this, I wrote some code to first split up the provided coordinates into two parts, first the letter part then the number part. Following this, I wrote a for loop that goes through the X axis of the palyers board and compares the X axis labels to the letter part of the coordinate. If it matches, then the current loop iteration gets pushed into a new vector called `coordsVect` of type int. After this the number part (Y axis) gets pushed into said vector.
 
-• Select and place any of their non-placed or placed ships (as provided via the config file) at any valid position on their shipboard.
+Finally, the user enters the direction of the ship, this proved to be another issue because if the direction provided makes the ship generate off of the grid the program crashes. I decided to leave this issue for now and tackle it in the next phase.
 
-• Clearly indicate the current non-placed and placed ships.
+#### **Shooting**
+At the end of this phase I decided to implement shooting. I reused the code to convert the user entered coordinates into int values to determine where the user wants to shoot. Following this I compared the index selected on the opponents board with the board notation to determine if the shot missed, hit or has already been tried. After this the opponents board and players targetboard get updated with the new notation or if the coordinate has already been checked the user gets propmted to shoot somewhere else.
 
-• See their current shipboard.
+#### **Misc.**
+Along with these changes, I also worked on making placing ships possible on a larger grid. This was a challenge as it incorperated coordinates of a different format (instead of `'letter'number` eg. `F2` these could now also be `AF2` or `F21` or `AF21`). In order to tackle this I had to add checks to determine the format, and add a new check to convert larger `'letter''letter'number` format coordinates to integers.
 
-• Be robust enough to prevent any invalid behaviours, prevent or correct any illegal placements and avoid system issues or errors related to user input.
+### **Phase 3. Ship placing automation and shooting automation**
+This phase consisted of adding automated options to shooting and placing ships. This phase was crucial in order for me to start development on the 'Player vs Computer' game mode as the computer would have to automatically place its ships and shoot at the player.
 
-• Allow any non-placed ships to be ‘auto-placed’.
+#### **Automatic ship placing**
+The first thing I did was create a method within the `Ship` class called `generateCoord` and `generateDirection` (I later made `generateCoord` a function so that I could reuse it in the automated shooting). Following this I added a parameter to the placeShip method called `placeType`, this determines wether the ship will be placed manually or automatically. If the `placeType` is set to '1', then the user gets prompted for the ships coordinates and direction, otherwise the `generateCoord` method and `generateDirection` method are called. 
 
-• Auto-place all ships.
+This worked, but not very well because no checks were made to see if a ship already exists in a generated coordinate, meaning many ships would spawn on top of eachother and in eachother, creating mega-ships. In addition, automated ship placing would often crash, however this was solved in Phase 4.
 
-• Support a ‘quit’ game and ‘reset’ shipboard option.
+#### **Automatic shooting**
+My process of adding an automated shooting option to the shooting function was very similar to adding the automated ship placing. I first converted the `generateCoord` method into a function, so that I could use it for more then ship related tasks. I then added a `shootOption` parameter that worked just like the `placeType` parameter but for shooting.
 
-• Support a ‘continue’ option if all ships have been placed and the user has confirmed they are happy with the current placements.
+This worked well, however I later found out that the coordinates generated were not very random and would occasionally crash. I looked into this in Phase 4.
 
-#### 3. A computer-based opponent than can automatically complete a valid setup process using a random strategy (i.e., place all their ships at valid but ,constantly differing positions on their own shipboard); essentially this should utilise the auto-place feature outlined above.
+### **Phase 4. Testing, debugging and refactoring**
+My next phase consisted of going through my code and refactoring it, along with debugging and fixing the issues I had with automated ship placement and automated shooting.
 
-#### 4. A usable, intuitive and highly efficient Turn based process supported with a minimal user effort interface in which game turns are played:
+#### **Fixing coordinate generation** 
+After some testing I found that my coordinate generator would occasionally generate a coordinate that did not exist on the board (eg. if the board was 10x10 it would generate `K11`). This was a simple fix and resolved a lot of issues with automatic ship placement and shooting, however fixing this uncovered a second issue.
 
-• Player’s turn:
+This issue was that my random generation would not be random, so the Y and X axis of the coordinates generated was always the same. For example, `A1`, or `C3` etc. (A is the first letter in the alphabet, C is the 3rd so the X and Y matched). I had two solution to this problem, one was changing the random generation completely and the second was adding a small delay between the axis coordinate generation (this would fix the issue as my random generation is based off of system time, so waiting 1 second would mean differnet numbers would be generated). I decided to go for the second option.
 
-- Their own, current and up to date ship and targetboards are displayed as well aligned tables (rows and columns).
-- Players are able to ‘fire’ a single torpedo at a valid location (i.e., not previously targeted and within the board boundary) using the single notation coordinate (e.g., F2, etc.); if the location is invalid the player is asked to re-try.
-- Auto ‘fire’ option; this option targets and ‘fires’ at valid locations.
-- Players are clearly notified of a ‘hit’ or ‘miss’ (or win) based on the outcome of their turn.
-- Players are able to quit the game (if not already won).
-- Players are required to ‘press a key’ to end their turn.
+#### **Refactoring**
+Finally, this phase consisted of a lot of code refactoring. This mainly involved moving classes into different files, removing unneccessary variables and functions along with reafactoring in such a way that the code was easily readable. At this point I also started to add minor comments to help in readability and renamed a couple of variable for the same reason.
 
-• Computer’s turn:
+### **Phase 5. Player vs Computer**
+This is the second to last phase, it includes working on the 'Player vs Computer' game mode, along with adding a Win state to the game.
 
-- Its own, current and up to date ship and target boards are displayed as well aligned tables (rows and columns).
-- It uses its own up to date ‘targetboard’ to randomly ‘fire’ a torpedo at a valid location (i.e., not previously targeted and within the board boundary).
-- A clear notification of a ‘hit’ or ‘miss’ (or win) based on the outcome is shown.
-- A user based ‘press a key’ interaction is required to end the computer’s turn.
+#### **Player vs Computer**
+Implementing an AI that the player faces was not as difficult as I first imagined, this is because I already had ship placement automation and shooting automation in place. In order to add the computer I copied the 'Player vs Player' code into a seporate file and altered the game loop, along with player creation.
 
-### Merit level (in addition to the pass) your game is expected to support:
-#### 5. Improved customised game and configuration settings (based on changing the ‘adaship_config.ini’ file):
+After the bot was working, I had to implement a developer mode for testing and as part of the mark scheme. This developer mode is only available for the bot as otherwise I would not be able to test if the bot's ship placement and turn is working as intended. 
 
-• Any valid size of board (valid ranges are: 5x5 to 80x80)
+#### **Win state**
+Up until this point there has been no real way to win the game, so in order to resolve this I added a property into the `Player` class called `score`. Following this I created a variable called `winScore` that was equal to the amount of spaces the oppositions ships occupied. The players `score` is incremented every time they hit their opponents ship, and the first player to get their `score` to match the `winScore` wins.
 
-#### 6. An extended Set-Up interface in which a player can with minimal effort:
+### **Phase 6. Final testing, debugging and refactoring**
+In the final phase I worked on testing every part of my code, in addition to fixing any outstanding bugs, working on the main menu screen and commenting my code / updating the readme.
 
-• Select from a game menu to a start a:
-- One player v computer game
-- Two player game; essentially replacing the computer with a second player
-- One player v computer (salvo) game
-- Two player game (salvo) game
-- Quit
+#### **Fixing direction generation / collisions**
+Up until this point the automatic ship placement works all the time, however ships still have the capability to spawn inside other ships, making the game un-winnable because less ships take up spaces on the board then are supposed to. In order to solve this I wrote a `validateDirection` method, that checks all of the spaces a ship will spawn in and generates a new coordinate with a new direction if even one space is occupied by a ship already. 
 
-#### 7. Improved game play “salvo” variation:
+#### **Main menu changes and input validation**
+A big part of this phase was making the main menu look presentable, this included giving the user an option to choose from 'Player vs Computer', 'Player vs Player' and 'Quit'. In addition to this I worked on input validation, this included automatcially converting user inputs to the same case, along with always selecting the bottom most available option that is not 'Quit' if the user enters an unrecognised input.
 
-The salvo implementation updates the basic game play by allowing the current ‘player’ (player or computer) to ‘fire’ one torpedo per their remaining ships. For example, if the ‘player’ has three ‘non-destroyed’ ships instead of a single valid coordinate (e.g., F2) they could enter F2 E2 G2 (one coordinate per ship) – once entered, details on any ‘hits’ and/or ‘misses’ are clearly provided, and all appropriate boards are updated to reflect this salvo.
+## **Evaluation**
+In this section I will discuss the things that went well and the things that could have of gone better, in addition to future improvements / features I did not manage to implement.
 
-### Distinction level (in addition to the merit) your game is expected to support:
-#### 8. Improved customised game and configuration setting (based on changing the ‘adaship_config.ini’ file):
+### **What went well**
+Overall, I am satisfied with the quality of my ADA Ships program, it feels very intuitive to use and works as intended. My iterative approach and planning greatly helped me with development as I had something to reference whenever I was unsure about logic, in addition I am satisfied with overcoming all of the challenges mentioned during the [Development stage](#development). I also feel satisfied with the implementation of both the 'Player vs Computer' game mode and the 'Player vs Player' game mode.
 
-• Unlimited additional boats: each additional boat should follow the file’s existing structure; for the purpose of this assessment and as there is a logical and rational limit ‘unlimited’ simply means your solution’s design and logic technically supports any number of boats.
+The scalability of my program is also an achievement I am proud of, allowing users to play on grids that are much larger or smaller then the default size, along with being able to play with more or less ships. This feature helps to add diversity to each game, even letting the user change the size of the ships.
 
-#### 9. An extended Set-Up interface in which a player can with minimal effort:
+### **Could be better**
+My main concern with this program is adding more advanced game modes might require some re-written code, this is because of the way the program handles the score and destroying ships. The `Ship` class does not store the ships status (destroyed or not) or its position, so for example adding a 'salvo' game mode would require re-writing the `shoot` function and the `Ship` class, as the program needs to know how many ships are destroyed and how many are not.
 
-• Select from a game menu to a start a:
-- One player v computer game
-- Two player game; essentially replacing the computer with a second player
-- One player v computer (salvo) game
-- Two player game (salvo) game
-- One player v computer (hidden mines) game
-- Two player game (hidden mines) game
-- Computer v computer (hidden mines)
-- Quit
+In addition to this, the current 'Player vs Computer' game mode has a very rudimentary bot that randomly fires, adding some sort of advanced AI that fires more systematically and follows up on hits would be a great addition to the game; however due to time restraints and my somewhat poor time management for this challenge I did not manage to implement this.
 
-#### 10. Improved game play “hidden mines” variation:
-
-The hidden mines implementation updates the basic game play with five randomly dropped mines. The hidden mines are essentially added to each ‘players’ shipboard and remain ‘hidden’ during the set-up phase (optionally they could be added on completion of each set-up). However, they should be clearly displayed during game turns as part of each ‘players’ shipboard.
-
-If an opponent’s torpedo ‘hits’ a hidden mine that location and the eight immediately surrounding it ‘explode’. If any of the players ships directly intersect with the ‘explosion’ they are ‘hit’ as per normal play. Positions ‘outside’ the board can be ignored. 11: Improved ‘computer player’ targeting problem: Design and implement a separate, optimised search and/or targeting algorithm, it is likely that your solution has implemented a generally random or basic algorithm to ‘pick’ targets; research and implement a better than random solution to this problem.
-
-## Submission
-You are required to submit a single, complete and tested GitHub linked repo via Google Classroom by the appropriate submission date (see cover) – 
-### Your repo is expected to demonstrate multiple commits and provide:
-
-- A formatted well-structured and planned, academic and professional README.md; see Structuring and completing your Readme document (below for more information).
-
-- A REPL.IT compatible and testable C++ project, i.e., your GitHub’s repository URL can be directly imported for review, execution and testing on the REPL platform (see issues likely to impact your grade below for more information).
-
-### Structuring and completing your README document
-The three titles below provide and outline the structure and subsections expected as part of your submission; in addition to previous notes or discussions, for more information on achieving higher grades in written work please review the AdaHelp document available via the Google Classroom. It is suggested that these sections are in order.
-
-#### 1. Challenge Outline (academic standard: pass level detail: section required for pass)
->a. Summary and review of the problem, overall proposed solution.
-b. UML style diagram illustrating initial overall solution (linked to 1a)
-c. Initial working plan, overall approach, development strategy and approach to quality (linked to 1a, 1b).
-d. Analysis and decomposition of the overall problem into key ‘epic’ style tasks (linked to 1b, 1c).
-e. Initial object-oriented design ideas and plan of phased breakdown into smaller tasks (linked to 1d).
-
-#### 2. Development (academic standard: merit level detail: section required for merit)
->a. Adoption and use of ‘good’ standards (linked to 1a, 1b, 1c).
-b. Phase 1 development: tasks, code review and changes (linked to 1d,1e).
-c. ..repeated for each development phase.
-d. Phase n development: tasks, code review and changes (linked to 1d,1e).
-e. Ensuring quality through testing and resolving bugs (linked to 1a, 1b, 2a, 2b..2c).
-f. Reflection on key design challenges, innovations and how I solved them (with examples).
-
-#### 3. Evaluation (academic standard: distinction level detail: section required for distinction)
->a. Analysis with embedded examples of key code refactoring, reuse, smells.
-b. Implementation and effective use of ‘advanced’ programming principles (with examples).
-c. Features showcase and embedded innovations (with examples) - opportunity to ‘highlight’ best bits.
-d. Improved targeting algorithm – research, design, implementation and tested confirmation (with examples).
-e. Reflective review, opportunities to improve and continued professional development.
-
-### Issues likely to impact your grade:
-• Commits made after the submission date and time.
-• Incompatibility and/or issues with GitHub and Repl.IT importing
-• Errors preventing compilation, execution, etc.
-• Incomplete implementations.
-• Missing evidence.
-• Inconsistent and/or missing standards in coding and documentation.
-• Poor refactoring - Code refactoring is the rewriting of code for clarity and efficiency rather than bug fixing; in essence, this is similar to writing or improving academic ‘paper’ drafts
-
-## Appendix A.Expected programming Standards
-
-### Adoption and use of good programming standards:
-• Include good quality, clear, jargon free and up to date internal documentation / comments; adopt the philosophy of writing comments for non-programmers.
-• Eliminate or minimise code duplication & any unnecessary redundancy.
-• Strive for simplicity in logic and flow.
-• Use a consistent naming convention for functions, variables, objects, etc to provide clear contextual value, improved comprehension and quick readability.
-• Use appropriate and consistent indentation, logical grouping and spaced blocks within your codebases; adopt tabs or a set number of spaces (ideally tabs) for indenting.
-• Use spaces consistently to separate operators and delimiters.
-• Be consistent when aligning braces; use a vertically or slanted style.
-• Avoid deep nested conditionals.
-• Avoid single (long) lines of code containing multiple operations; consider ‘one line one instruction”.
-• Keep variable lifetimes and scope as short and as small as possible.
-• Avoid multipurpose functions and variables.
-• Conserve system resources.
-• Minimise forced type conversion, coercion or casting.
-• Know and test your code: adopt a personal and rigorous testing strategy; don’t just see it if works - test and fix its limits.
-• Test early and often, fail fast and resolve effectively.
+Finally, refactoring the automated ship placer, coordinate generator and direction generator would make the game feel far more fluid. This is because right now loading times for automated ship placement can be surprisingly long, which can be frustrating if users are trying to play multiple games.
